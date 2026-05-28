@@ -31,8 +31,17 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     return this.store.get(id) ?? null
   }
 
-  async find(_options: FindOptions): Promise<FindResult> {
-    return { data: [], total: 0, page: 1, limit: 20 }
+  async find(options: FindOptions): Promise<FindResult> {
+    const page = options.page ?? 1
+    const limit = options.limit ?? 20
+
+    let results = Array.from(this.store.values())
+    const total = results.length
+
+    const start = (page - 1) * limit
+    const data = results.slice(start, start + limit)
+
+    return { data, total, page, limit }
   }
 
   async update(id: string, input: UpdateEmployeeInput): Promise<Employee> {
