@@ -37,4 +37,22 @@ describe('InMemoryEmployeeRepository', () => {
       expect(count).toBe(2)
     })
   })
+
+  describe('findById', () => {
+    it('should return the employee with the matching id', async () => {
+      const created = await repo.create(makeEmployee())
+
+      const found = await repo.findById(created.id)
+
+      expect(found).not.toBeNull()
+      expect(found?.id).toBe(created.id)
+      expect(found?.full_name).toBe('John Doe')
+    })
+
+    it('should return null when id does not exist', async () => {
+      const found = await repo.findById('non-existent-id')
+
+      expect(found).toBeNull()
+    })
+  })
 })
