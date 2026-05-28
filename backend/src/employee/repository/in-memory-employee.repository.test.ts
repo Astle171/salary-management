@@ -131,5 +131,14 @@ describe('InMemoryEmployeeRepository', () => {
       expect(result.total).toBe(5)
       expect(result.data.every(e => e.country === 'India')).toBe(true)
     })
+
+    it('should filter employees by job_title', async () => {
+      await repo.create(makeEmployee({ full_name: 'PM', job_title: 'Product Manager' }))
+
+      const result = await repo.find({ job_title: 'Engineer' })
+
+      expect(result.total).toBe(5)
+      expect(result.data.every(e => e.job_title === 'Engineer')).toBe(true)
+    })
   })
 })
