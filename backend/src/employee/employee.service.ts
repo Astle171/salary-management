@@ -61,4 +61,10 @@ export class EmployeeService {
 
     return this.repo.update(id, sanitized)
   }
+
+  async delete(id: string): Promise<void> {
+    const existing = await this.repo.findById(id)
+    if (!existing) throw new Error('Employee not found')
+    return this.repo.delete(id)
+  }
 }
