@@ -23,6 +23,11 @@ export class InsightsService {
   async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
     return this.repo.getDepartmentDistribution()
   }
+
+  async getTopEarners(limit: number): Promise<TopEarner[]> {
+    return this.repo.getTopEarners(limit)
+  }
 }
+
 
 

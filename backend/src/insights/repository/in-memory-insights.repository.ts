@@ -64,7 +64,16 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     }))
   }
 
-  async getTopEarners(_limit: number): Promise<TopEarner[]> {
-    return [] // implemented later
+  async getTopEarners(limit: number): Promise<TopEarner[]> {
+    return [...this.employees]
+      .sort((a, b) => b.salary - a.salary)
+      .slice(0, limit)
+      .map(e => ({
+        id:        e.id,
+        full_name: e.full_name,
+        job_title: e.job_title,
+        country:   e.country,
+        salary:    e.salary,
+      }))
   }
 }
