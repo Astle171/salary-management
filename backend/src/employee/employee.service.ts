@@ -6,6 +6,8 @@ export class EmployeeService {
   constructor(private readonly repo: IEmployeeRepository) {}
 
   async create(data: unknown): Promise<Employee> {
+    // Validation is fully delegated to EmployeeValidator (Single Responsibility).
+    // ValidationError propagates to the caller unchanged.
     const validated = EmployeeValidator.validate(data as Record<string, unknown>)
     return this.repo.create({
       ...validated,
