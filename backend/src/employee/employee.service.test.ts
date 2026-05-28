@@ -79,4 +79,21 @@ describe('EmployeeService', () => {
       ).rejects.toThrow(ValidationError)
     })
   })
+
+  describe('delete', () => {
+    it('should delete an existing employee', async () => {
+      const created = await service.create(makeValidInput())
+
+      await service.delete(created.id)
+
+      const count = await repo.count()
+      expect(count).toBe(0)
+    })
+
+    it('should throw when employee does not exist', async () => {
+      await expect(
+        service.delete('non-existent-id')
+      ).rejects.toThrow('Employee not found')
+    })
+  })
 })
