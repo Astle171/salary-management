@@ -6,6 +6,7 @@ import {
   DepartmentDistribution,
   TopEarner,
 } from '../../shared/types/insights.types'
+import { SalaryAggregator } from '../../shared/helpers/salary-aggregator'
 
 export class InMemoryInsightsRepository implements IInsightsRepository {
   private employees: Employee[] = []
@@ -21,9 +22,7 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     const salaries = group.map(e => e.salary)
     return {
       country,
-      min_salary:     Math.min(...salaries),
-      max_salary:     Math.max(...salaries),
-      avg_salary:     salaries.reduce((a, b) => a + b, 0) / salaries.length,
+      ...SalaryAggregator.summary(salaries),
       employee_count: group.length,
     }
   }
@@ -37,13 +36,11 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     )
     if (group.length === 0) return null
 
-    const avg_salary =
-      group.reduce((sum, e) => sum + e.salary, 0) / group.length
-
+    const salaries = group.map(e => e.salary)
     return {
       job_title: jobTitle,
       country,
-      avg_salary,
+      avg_salary: SalaryAggregator.avg(salaries),
       employee_count: group.length,
     }
   }
@@ -60,7 +57,7 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     return Array.from(groups.entries()).map(([department, salaries]) => ({
       department,
       employee_count: salaries.length,
-      avg_salary: salaries.reduce((a, b) => a + b, 0) / salaries.length,
+      avg_salary:     SalaryAggregator.avg(salaries),
     }))
   }
 
