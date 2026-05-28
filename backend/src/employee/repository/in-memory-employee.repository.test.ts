@@ -122,5 +122,14 @@ describe('InMemoryEmployeeRepository', () => {
       expect(result.data.length).toBe(0)
       expect(result.total).toBe(5)
     })
+
+    it('should filter employees by country', async () => {
+      await repo.create(makeEmployee({ full_name: 'Extra', country: 'USA' }))
+
+      const result = await repo.find({ country: 'India' })
+
+      expect(result.total).toBe(5)
+      expect(result.data.every(e => e.country === 'India')).toBe(true)
+    })
   })
 })
