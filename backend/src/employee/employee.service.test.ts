@@ -52,4 +52,31 @@ describe('EmployeeService', () => {
       ).rejects.toThrow(ValidationError)
     })
   })
+
+  describe('update', () => {
+    it('should update only the provided fields', async () => {
+      const created = await service.create(makeValidInput())
+
+      const updated = await service.update(created.id, { salary: 80000 })
+
+      expect(updated.salary).toBe(80000)
+      expect(updated.full_name).toBe('Jane Doe')
+    })
+
+    it('should throw ValidationError when salary update is negative', async () => {
+      const created = await service.create(makeValidInput())
+
+      await expect(
+        service.update(created.id, { salary: -1 })
+      ).rejects.toThrow(ValidationError)
+    })
+
+    it('should throw ValidationError when salary update is zero', async () => {
+      const created = await service.create(makeValidInput())
+
+      await expect(
+        service.update(created.id, { salary: 0 })
+      ).rejects.toThrow(ValidationError)
+    })
+  })
 })
