@@ -36,10 +36,14 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     const limit = options.limit ?? 20
 
     let results = Array.from(this.store.values())
+
+    if (options.country) {
+      results = results.filter(e => e.country === options.country)
+    }
+
     const total = results.length
 
-    const start = (page - 1) * limit
-    const data = results.slice(start, start + limit)
+    const data = results.slice((page - 1) * limit, page * limit)
 
     return { data, total, page, limit }
   }
