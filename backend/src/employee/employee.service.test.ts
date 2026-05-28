@@ -134,4 +134,21 @@ describe('EmployeeService', () => {
       expect(result.data[0].full_name).toBe('Alice')
     })
   })
+
+  describe('getById', () => {
+    it('should return the employee when found', async () => {
+      const created = await service.create(makeValidInput())
+
+      const found = await service.getById(created.id)
+
+      expect(found.id).toBe(created.id)
+      expect(found.full_name).toBe('Jane Doe')
+    })
+
+    it('should throw when employee does not exist', async () => {
+      await expect(
+        service.getById('non-existent-id')
+      ).rejects.toThrow('Employee not found')
+    })
+  })
 })
