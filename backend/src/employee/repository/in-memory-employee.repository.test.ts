@@ -55,4 +55,24 @@ describe('InMemoryEmployeeRepository', () => {
       expect(found).toBeNull()
     })
   })
+
+  describe('update', () => {
+    it('should update only the specified fields', async () => {
+      const created = await repo.create(makeEmployee({ salary: 50000 }))
+
+      const updated = await repo.update(created.id, { salary: 75000 })
+
+      expect(updated.salary).toBe(75000)
+      expect(updated.full_name).toBe('John Doe')
+      expect(updated.updated_at.getTime()).toBeGreaterThanOrEqual(
+        created.updated_at.getTime()
+      )
+    })
+
+    it('should throw when updating a non-existent employee', async () => {
+      await expect(
+        repo.update('bad-id', { salary: 1000 })
+      ).rejects.toThrow('Employee not found')
+    })
+  })
 })

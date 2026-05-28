@@ -27,8 +27,8 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     return this.store.size
   }
 
-  async findById(_id: string): Promise<Employee | null> {
-    return null
+  async findById(id: string): Promise<Employee | null> {
+    return this.store.get(id) ?? null
   }
 
   async find(_options: FindOptions): Promise<FindResult> {
