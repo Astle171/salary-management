@@ -53,4 +53,31 @@ describe('InsightsService', () => {
       expect(stats).toBeNull()
     })
   })
+
+  describe('getJobTitleStats', () => {
+    it('should return avg salary and count for a job title in a country', async () => {
+      repo.seedEmployees([
+        makeEmployee({ job_title: 'Engineer', country: 'India', salary: 50000 }),
+        makeEmployee({ job_title: 'Engineer', country: 'India', salary: 70000 }),
+        makeEmployee({ job_title: 'Engineer', country: 'USA',   salary: 120000 }),
+        makeEmployee({ job_title: 'Manager',  country: 'India', salary: 90000 }),
+      ])
+
+      const stats = await service.getJobTitleStats('Engineer', 'India')
+
+      expect(stats).not.toBeNull()
+      expect(stats?.job_title).toBe('Engineer')
+      expect(stats?.country).toBe('India')
+      expect(stats?.avg_salary).toBe(60000)
+      expect(stats?.employee_count).toBe(2)
+    })
+
+    it('should return null when no match found', async () => {
+      repo.seedEmployees([makeEmployee({ job_title: 'Engineer', country: 'India' })])
+
+      const stats = await service.getJobTitleStats('Designer', 'India')
+
+      expect(stats).toBeNull()
+    })
+  })
 })
