@@ -45,6 +45,11 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
       results = results.filter(e => e.job_title === options.job_title)
     }
 
+    if (options.search) {
+      const term = options.search.toLowerCase()
+      results = results.filter(e => e.full_name.toLowerCase().includes(term))
+    }
+
     const total = results.length
 
     const data = results.slice((page - 1) * limit, page * limit)
