@@ -49,7 +49,19 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
   }
 
   async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
-    return [] // implemented later
+    const groups = new Map<string, number[]>()
+
+    for (const e of this.employees) {
+      const salaries = groups.get(e.department) ?? []
+      salaries.push(e.salary)
+      groups.set(e.department, salaries)
+    }
+
+    return Array.from(groups.entries()).map(([department, salaries]) => ({
+      department,
+      employee_count: salaries.length,
+      avg_salary: salaries.reduce((a, b) => a + b, 0) / salaries.length,
+    }))
   }
 
   async getTopEarners(_limit: number): Promise<TopEarner[]> {

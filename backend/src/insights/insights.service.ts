@@ -19,5 +19,10 @@ export class InsightsService {
   ): Promise<JobTitleStats | null> {
     return this.repo.getJobTitleStats(jobTitle, country)
   }
+
+  async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
+    return this.repo.getDepartmentDistribution()
+  }
 }
+
 
