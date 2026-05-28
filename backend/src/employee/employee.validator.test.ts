@@ -32,5 +32,23 @@ describe('EmployeeValidator', () => {
         EmployeeValidator.validate({ full_name: 'Astle Machado', job_title: 'Engineer', country: 'India' })
       ).toThrow(ValidationError)
     })
+
+    it('should throw ValidationError when salary is zero', () => {
+      expect(() =>
+        EmployeeValidator.validate({ full_name: 'John Doe', job_title: 'Engineer', country: 'India', salary: 0 })
+      ).toThrow(ValidationError)
+    })
+
+    it('should throw ValidationError when salary is negative', () => {
+      expect(() =>
+        EmployeeValidator.validate({ full_name: 'John Doe', job_title: 'Engineer', country: 'India', salary: -100 })
+      ).toThrow(ValidationError)
+    })
+
+    it('should throw ValidationError when salary is not a number', () => {
+      expect(() =>
+        EmployeeValidator.validate({ full_name: 'John Doe', job_title: 'Engineer', country: 'India', salary: 'abc' })
+      ).toThrow(ValidationError)
+    })
   })
 })
