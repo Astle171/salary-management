@@ -49,7 +49,8 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     return updated
   }
 
-  async delete(_id: string): Promise<void> {
-    throw new Error('Not implemented')
+  async delete(id: string): Promise<void> {
+    if (!this.store.has(id)) throw new Error('Employee not found')
+    this.store.delete(id)
   }
 }
