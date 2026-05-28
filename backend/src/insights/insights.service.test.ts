@@ -110,4 +110,49 @@ describe('InsightsService', () => {
       expect(result).toEqual([])
     })
   })
+
+  describe('getTopEarners', () => {
+    it('should return top N employees sorted by salary descending', async () => {
+      repo.seedEmployees([
+        makeEmployee({ id: '1', full_name: 'Low',    salary: 30000 }),
+        makeEmployee({ id: '2', full_name: 'High',   salary: 90000 }),
+        makeEmployee({ id: '3', full_name: 'Medium', salary: 60000 }),
+      ])
+
+      const result = await service.getTopEarners(2)
+
+      expect(result).toHaveLength(2)
+      expect(result[0].full_name).toBe('High')
+      expect(result[0].salary).toBe(90000)
+      expect(result[1].full_name).toBe('Medium')
+      expect(result[1].salary).toBe(60000)
+    })
+
+    it('should return all employees when limit exceeds total', async () => {
+      repo.seedEmployees([
+        makeEmployee({ salary: 50000 }),
+        makeEmployee({ salary: 70000 }),
+      ])
+
+      const result = await service.getTopEarners(10)
+
+      expect(result).toHaveLength(2)
+    })
+
+    it('should return only required fields', async () => {
+      repo.seedEmployees([
+        makeEmployee({ id: 'abc', full_name: 'Jane', job_title: 'Engineer', country: 'India', salary: 80000 }),
+      ])
+
+      const result = await service.getTopEarners(1)
+
+      expect(result[0]).toEqual({
+        id: 'abc',
+        full_name: 'Jane',
+        job_title: 'Engineer',
+        country: 'India',
+        salary: 80000,
+      })
+    })
+  })
 })
