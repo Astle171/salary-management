@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto'
 import { IEmployeeRepository } from './employee.repository.interface'
+import { PaginationHelper } from '../../shared/helpers/pagination.helper'
 import {
   Employee,
   FindOptions,
@@ -32,8 +33,7 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
   }
 
   async find(options: FindOptions): Promise<FindResult> {
-    const page = options.page ?? 1
-    const limit = options.limit ?? 20
+    const { page, limit, skip } = PaginationHelper.resolve(options)
 
     let results = Array.from(this.store.values())
 
@@ -51,8 +51,7 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     }
 
     const total = results.length
-
-    const data = results.slice((page - 1) * limit, page * limit)
+    const data = results.slice(skip, skip + limit)
 
     return { data, total, page, limit }
   }
