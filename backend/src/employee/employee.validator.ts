@@ -14,8 +14,14 @@ export class EmployeeValidator {
       throw new ValidationError('country is required')
     }
 
-    if (data.salary === undefined || data.salary === null) {
-      throw new ValidationError('salary is required')
+    if (
+      data.salary === undefined ||
+      data.salary === null ||
+      typeof data.salary !== 'number' ||
+      isNaN(data.salary) ||
+      data.salary <= 0
+    ) {
+      throw new ValidationError('salary must be a positive number')
     }
   }
 }
