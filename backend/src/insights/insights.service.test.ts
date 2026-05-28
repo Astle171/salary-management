@@ -80,4 +80,34 @@ describe('InsightsService', () => {
       expect(stats).toBeNull()
     })
   })
+
+  describe('getDepartmentDistribution', () => {
+    it('should return headcount and avg salary per department', async () => {
+      repo.seedEmployees([
+        makeEmployee({ department: 'Engineering', salary: 60000 }),
+        makeEmployee({ department: 'Engineering', salary: 80000 }),
+        makeEmployee({ department: 'HR',          salary: 40000 }),
+      ])
+
+      const result = await service.getDepartmentDistribution()
+
+      expect(result).toHaveLength(2)
+
+      const eng = result.find(d => d.department === 'Engineering')
+      expect(eng?.employee_count).toBe(2)
+      expect(eng?.avg_salary).toBe(70000)
+
+      const hr = result.find(d => d.department === 'HR')
+      expect(hr?.employee_count).toBe(1)
+      expect(hr?.avg_salary).toBe(40000)
+    })
+
+    it('should return empty array when no employees', async () => {
+      repo.seedEmployees([])
+
+      const result = await service.getDepartmentDistribution()
+
+      expect(result).toEqual([])
+    })
+  })
 })
