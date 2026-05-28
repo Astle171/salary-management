@@ -1,5 +1,6 @@
 import { EmployeeService } from './employee.service'
 import { InMemoryEmployeeRepository } from './repository/in-memory-employee.repository'
+import { ValidationError } from '../shared/errors/validation.error'
 
 const makeValidInput = (overrides = {}) => ({
   full_name: 'Jane Doe',
@@ -31,6 +32,24 @@ describe('EmployeeService', () => {
 
       const count = await repo.count()
       expect(count).toBe(1)
+    })
+
+    it('should throw ValidationError when full_name is missing', async () => {
+      await expect(
+        service.create(makeValidInput({ full_name: '' }))
+      ).rejects.toThrow(ValidationError)
+    })
+
+    it('should throw ValidationError when salary is negative', async () => {
+      await expect(
+        service.create(makeValidInput({ salary: -500 }))
+      ).rejects.toThrow(ValidationError)
+    })
+
+    it('should throw ValidationError when country is missing', async () => {
+      await expect(
+        service.create(makeValidInput({ country: '' }))
+      ).rejects.toThrow(ValidationError)
     })
   })
 })
