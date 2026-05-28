@@ -41,6 +41,10 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
       results = results.filter(e => e.country === options.country)
     }
 
+    if (options.job_title) {
+      results = results.filter(e => e.job_title === options.job_title)
+    }
+
     const total = results.length
 
     const data = results.slice((page - 1) * limit, page * limit)
