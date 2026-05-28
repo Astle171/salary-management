@@ -1,4 +1,5 @@
 import { FindOptions } from '../../shared/types/employee.types'
+import { PaginationHelper } from '../../shared/helpers/pagination.helper'
 
 export class EmployeeQueryBuilder {
   static buildWhere(options: FindOptions): Record<string, unknown> {
@@ -11,9 +12,7 @@ export class EmployeeQueryBuilder {
     }
   }
 
-  static buildPagination(options: FindOptions): { skip: number; take: number; page: number; limit: number } {
-    const page = options.page ?? 1
-    const limit = options.limit ?? 20
-    return { skip: (page - 1) * limit, take: limit, page, limit }
+  static buildPagination(options: FindOptions) {
+    return PaginationHelper.resolve(options)
   }
 }

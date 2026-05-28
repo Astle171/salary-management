@@ -34,11 +34,11 @@ export class PrismaEmployeeRepository implements IEmployeeRepository {
   }
 
   async find(options: FindOptions): Promise<FindResult> {
-    const { skip, take, page, limit } = EmployeeQueryBuilder.buildPagination(options)
+    const { skip, limit, page } = EmployeeQueryBuilder.buildPagination(options)
     const where = EmployeeQueryBuilder.buildWhere(options)
 
     const [data, total] = await Promise.all([
-      prisma.employee.findMany({ where, skip, take }),
+      prisma.employee.findMany({ where, skip, take: limit }),
       prisma.employee.count({ where }),
     ])
 
