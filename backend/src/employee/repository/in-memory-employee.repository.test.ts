@@ -140,5 +140,12 @@ describe('InMemoryEmployeeRepository', () => {
       expect(result.total).toBe(5)
       expect(result.data.every(e => e.job_title === 'Engineer')).toBe(true)
     })
+
+    it('should search employees by full_name case-insensitively', async () => {
+      const result = await repo.find({ search: 'employee 1' })
+
+      expect(result.total).toBe(1)
+      expect(result.data[0].full_name).toBe('Employee 1')
+    })
   })
 })
