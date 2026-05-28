@@ -35,8 +35,18 @@ export class InMemoryEmployeeRepository implements IEmployeeRepository {
     return { data: [], total: 0, page: 1, limit: 20 }
   }
 
-  async update(_id: string, _input: UpdateEmployeeInput): Promise<Employee> {
-    throw new Error('Not implemented')
+  async update(id: string, input: UpdateEmployeeInput): Promise<Employee> {
+    const existing = this.store.get(id)
+    if (!existing) throw new Error('Employee not found')
+
+    const updated: Employee = {
+      ...existing,
+      ...input,
+      id,
+      updated_at: new Date(),
+    }
+    this.store.set(id, updated)
+    return updated
   }
 
   async delete(_id: string): Promise<void> {
