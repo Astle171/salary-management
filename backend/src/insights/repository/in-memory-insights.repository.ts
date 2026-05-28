@@ -29,10 +29,23 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
   }
 
   async getJobTitleStats(
-    _jobTitle: string,
-    _country: string
+    jobTitle: string,
+    country: string
   ): Promise<JobTitleStats | null> {
-    return null // implemented next
+    const group = this.employees.filter(
+      e => e.job_title === jobTitle && e.country === country
+    )
+    if (group.length === 0) return null
+
+    const avg_salary =
+      group.reduce((sum, e) => sum + e.salary, 0) / group.length
+
+    return {
+      job_title: jobTitle,
+      country,
+      avg_salary,
+      employee_count: group.length,
+    }
   }
 
   async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {

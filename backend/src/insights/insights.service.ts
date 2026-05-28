@@ -12,4 +12,12 @@ export class InsightsService {
   async getCountryStats(country: string): Promise<CountryStats | null> {
     return this.repo.getCountryStats(country)
   }
+
+  async getJobTitleStats(
+    jobTitle: string,
+    country: string
+  ): Promise<JobTitleStats | null> {
+    return this.repo.getJobTitleStats(jobTitle, country)
+  }
 }
+
