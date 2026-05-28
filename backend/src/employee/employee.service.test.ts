@@ -96,4 +96,42 @@ describe('EmployeeService', () => {
       ).rejects.toThrow('Employee not found')
     })
   })
+
+  describe('list', () => {
+    beforeEach(async () => {
+      await service.create(makeValidInput({ full_name: 'Alice', country: 'India' }))
+      await service.create(makeValidInput({ full_name: 'Bob',   country: 'India' }))
+      await service.create(makeValidInput({ full_name: 'Carol', country: 'USA'   }))
+    })
+
+    it('should return all employees with total', async () => {
+      const result = await service.list({})
+
+      expect(result.total).toBe(3)
+      expect(result.data.length).toBe(3)
+    })
+
+    it('should return paginated results', async () => {
+      const result = await service.list({ page: 1, limit: 2 })
+
+      expect(result.data.length).toBe(2)
+      expect(result.total).toBe(3)
+      expect(result.page).toBe(1)
+      expect(result.limit).toBe(2)
+    })
+
+    it('should filter by country', async () => {
+      const result = await service.list({ country: 'India' })
+
+      expect(result.total).toBe(2)
+      expect(result.data.every(e => e.country === 'India')).toBe(true)
+    })
+
+    it('should search by name', async () => {
+      const result = await service.list({ search: 'alice' })
+
+      expect(result.total).toBe(1)
+      expect(result.data[0].full_name).toBe('Alice')
+    })
+  })
 })

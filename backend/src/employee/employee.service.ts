@@ -3,6 +3,8 @@ import { EmployeeValidator } from './employee.validator'
 import { ValidationError } from '../shared/errors/validation.error'
 import {
   Employee,
+  FindOptions,
+  FindResult,
   UpdateEmployeeInput,
 } from '../shared/types/employee.types'
 
@@ -60,6 +62,10 @@ export class EmployeeService {
     }
 
     return this.repo.update(id, sanitized)
+  }
+
+  async list(options: FindOptions): Promise<FindResult> {
+    return this.repo.find(options)
   }
 
   async delete(id: string): Promise<void> {
