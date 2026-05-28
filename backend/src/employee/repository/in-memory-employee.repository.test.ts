@@ -90,4 +90,37 @@ describe('InMemoryEmployeeRepository', () => {
       await expect(repo.delete('bad-id')).rejects.toThrow('Employee not found')
     })
   })
+
+  describe('find', () => {
+    beforeEach(async () => {
+      for (let i = 1; i <= 5; i++) {
+        await repo.create(makeEmployee({ full_name: `Employee ${i}` }))
+      }
+    })
+
+    it('should return all employees with default pagination', async () => {
+      const result = await repo.find({})
+
+      expect(result.total).toBe(5)
+      expect(result.data.length).toBe(5)
+      expect(result.page).toBe(1)
+      expect(result.limit).toBe(20)
+    })
+
+    it('should return correct page when limit is applied', async () => {
+      const result = await repo.find({ page: 2, limit: 2 })
+
+      expect(result.data.length).toBe(2)
+      expect(result.page).toBe(2)
+      expect(result.limit).toBe(2)
+      expect(result.total).toBe(5)
+    })
+
+    it('should return empty data when page exceeds total', async () => {
+      const result = await repo.find({ page: 10, limit: 20 })
+
+      expect(result.data.length).toBe(0)
+      expect(result.total).toBe(5)
+    })
+  })
 })
