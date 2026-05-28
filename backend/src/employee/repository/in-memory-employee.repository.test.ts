@@ -75,4 +75,19 @@ describe('InMemoryEmployeeRepository', () => {
       ).rejects.toThrow('Employee not found')
     })
   })
+
+  describe('delete', () => {
+    it('should remove the employee from the store', async () => {
+      const created = await repo.create(makeEmployee())
+
+      await repo.delete(created.id)
+
+      const found = await repo.findById(created.id)
+      expect(found).toBeNull()
+    })
+
+    it('should throw when deleting a non-existent employee', async () => {
+      await expect(repo.delete('bad-id')).rejects.toThrow('Employee not found')
+    })
+  })
 })
