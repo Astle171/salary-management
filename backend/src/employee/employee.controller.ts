@@ -46,4 +46,13 @@ export class EmployeeController {
       next(err)
     }
   }
+
+  remove = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      await this.service.delete(req.params.id)
+      res.status(204).send()
+    } catch (err) {
+      next(err)
+    }
+  }
 }
