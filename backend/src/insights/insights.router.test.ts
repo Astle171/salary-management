@@ -86,4 +86,36 @@ describe('Insights Routes', () => {
       expect(res.status).toBe(422)
     })
   })
+
+  describe('GET /api/insights/top-earners', () => {
+    it('should return top N earners sorted by salary descending', async () => {
+      insightsRepo.seedEmployees([
+        makeEmployee({ full_name: 'Low',    salary: 30000 }),
+        makeEmployee({ full_name: 'High',   salary: 90000 }),
+        makeEmployee({ full_name: 'Medium', salary: 60000 }),
+      ])
+
+      const res = await request(app)
+        .get('/api/insights/top-earners')
+        .query({ limit: '2' })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(2)
+      expect(res.body[0].full_name).toBe('High')
+      expect(res.body[1].full_name).toBe('Medium')
+    })
+
+    it('should default to top 10 when limit is not provided', async () => {
+      insightsRepo.seedEmployees(
+        Array.from({ length: 15 }, (_, i) =>
+          makeEmployee({ full_name: `Employee ${i}`, salary: i * 1000 + 1000 })
+        )
+      )
+
+      const res = await request(app).get('/api/insights/top-earners')
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(10)
+    })
+  })
 })
