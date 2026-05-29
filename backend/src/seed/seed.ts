@@ -25,6 +25,18 @@ const seed = async (): Promise<void> => {
   console.log('🌱 Starting seed...')
   const start = Date.now()
 
+  // Idempotent guard — safe to run in CI repeatedly
+  const existing = await prisma.employee.count()
+  if (existing >= TOTAL) {
+    console.log(`⏭️  Already seeded (${existing} employees found). Skipping.`)
+    return
+  }
+
+  if (existing > 0) {
+    console.log(`⚠️  Found ${existing} existing employees. Clearing before re-seed...`)
+    await prisma.employee.deleteMany()
+  }
+
   const firstNames = NameGenerator.readLines(FIRST_NAMES)
   const lastNames  = NameGenerator.readLines(LAST_NAMES)
   console.log(`  Loaded ${firstNames.length} first names, ${lastNames.length} last names`)
