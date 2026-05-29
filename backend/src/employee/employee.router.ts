@@ -9,6 +9,7 @@ export const createEmployeeRouter = (service: EmployeeService): Router => {
   router.get('/', controller.list)
   router.post('/', controller.create)
   router.get('/:id', controller.getById)
+  router.put('/:id', controller.update)
 
   return router
 }

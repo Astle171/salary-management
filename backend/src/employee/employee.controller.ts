@@ -31,7 +31,16 @@ export class EmployeeController {
 
   getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const employee = await this.service.getById(req.params.id)
+      const employee = await this.service.getById(req.params.id as string)
+      res.json(employee)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  update = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const employee = await this.service.update(req.params.id as string, req.body)
       res.json(employee)
     } catch (err) {
       next(err)
