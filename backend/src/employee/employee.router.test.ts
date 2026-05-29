@@ -75,5 +75,23 @@ describe('Employee Routes', () => {
       expect(res.body.full_name).toBe('Jane Doe')
       expect(res.body.salary).toBe(60000)
     })
+
+    it('should return 422 when full_name is missing', async () => {
+      const res = await request(app)
+        .post('/api/employees')
+        .send({ job_title: 'Engineer', country: 'India', salary: 60000 })
+
+      expect(res.status).toBe(422)
+      expect(res.body.error).toBeDefined()
+    })
+
+    it('should return 422 when salary is negative', async () => {
+      const res = await request(app)
+        .post('/api/employees')
+        .send(makeValidInput({ salary: -100 }))
+
+      expect(res.status).toBe(422)
+      expect(res.body.error).toBeDefined()
+    })
   })
 })
