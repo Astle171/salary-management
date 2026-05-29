@@ -94,4 +94,27 @@ describe('Employee Routes', () => {
       expect(res.body.error).toBeDefined()
     })
   })
+
+  describe('GET /api/employees/:id', () => {
+    it('should return 200 with the employee when found', async () => {
+      const created = await repo.create({
+        full_name: 'Bob', job_title: 'Designer', department: 'Design',
+        country: 'USA', salary: 70000, currency: 'USD',
+        employment_type: 'full_time', hire_date: new Date(),
+      })
+
+      const res = await request(app).get(`/api/employees/${created.id}`)
+
+      expect(res.status).toBe(200)
+      expect(res.body.id).toBe(created.id)
+      expect(res.body.full_name).toBe('Bob')
+    })
+
+    it('should return 404 when employee does not exist', async () => {
+      const res = await request(app).get('/api/employees/non-existent-id')
+
+      expect(res.status).toBe(404)
+      expect(res.body.error).toBeDefined()
+    })
+  })
 })
