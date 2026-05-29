@@ -48,3 +48,34 @@ describe('NameGenerator', () => {
     })
   })
 })
+
+describe('generateUnique — uniqueness', () => {
+  it('should generate names with no duplicates', () => {
+    const firstNames = ['Alice', 'Bob', 'Carol', 'David', 'Eve']
+    const lastNames  = ['Smith', 'Jones', 'Brown', 'Wilson', 'Davis']
+
+    const names = NameGenerator.generateUnique(firstNames, lastNames, 25)
+    const unique = new Set(names)
+
+    expect(unique.size).toBe(25)
+  })
+
+  it('should throw when requested count exceeds possible combinations', () => {
+    const firstNames = ['Alice', 'Bob']
+    const lastNames  = ['Smith']
+
+    expect(() =>
+      NameGenerator.generateUnique(firstNames, lastNames, 5)
+    ).toThrow('Cannot generate 5 unique names')
+  })
+
+  it('should generate all 25 unique combinations from 5×5 fixture files', () => {
+    const firstNames = NameGenerator.readLines(firstNamesPath)
+    const lastNames  = NameGenerator.readLines(lastNamesPath)
+
+    const names = NameGenerator.generateUnique(firstNames, lastNames, 25)
+    const unique = new Set(names)
+
+    expect(unique.size).toBe(25)
+  })
+})
