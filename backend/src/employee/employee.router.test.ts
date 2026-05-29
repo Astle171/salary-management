@@ -63,4 +63,17 @@ describe('Employee Routes', () => {
       expect(res.body.page).toBe(2)
     })
   })
+
+  describe('POST /api/employees', () => {
+    it('should return 201 with the created employee', async () => {
+      const res = await request(app)
+        .post('/api/employees')
+        .send(makeValidInput())
+
+      expect(res.status).toBe(201)
+      expect(res.body.id).toBeDefined()
+      expect(res.body.full_name).toBe('Jane Doe')
+      expect(res.body.salary).toBe(60000)
+    })
+  })
 })
