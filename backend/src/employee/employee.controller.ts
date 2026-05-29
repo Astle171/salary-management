@@ -28,4 +28,13 @@ export class EmployeeController {
       next(err)
     }
   }
+
+  getById = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const employee = await this.service.getById(req.params.id)
+      res.json(employee)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
