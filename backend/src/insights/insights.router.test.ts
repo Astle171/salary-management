@@ -53,4 +53,37 @@ describe('Insights Routes', () => {
       expect(res.status).toBe(404)
     })
   })
+
+  describe('GET /api/insights/job-title', () => {
+    it('should return avg salary for job title in a country', async () => {
+      insightsRepo.seedEmployees([
+        makeEmployee({ job_title: 'Engineer', country: 'India', salary: 50000 }),
+        makeEmployee({ job_title: 'Engineer', country: 'India', salary: 70000 }),
+      ])
+
+      const res = await request(app)
+        .get('/api/insights/job-title')
+        .query({ title: 'Engineer', country: 'India' })
+
+      expect(res.status).toBe(200)
+      expect(res.body.avg_salary).toBe(60000)
+      expect(res.body.employee_count).toBe(2)
+    })
+
+    it('should return 404 when no match found', async () => {
+      const res = await request(app)
+        .get('/api/insights/job-title')
+        .query({ title: 'Designer', country: 'India' })
+
+      expect(res.status).toBe(404)
+    })
+
+    it('should return 422 when title or country is missing', async () => {
+      const res = await request(app)
+        .get('/api/insights/job-title')
+        .query({ title: 'Engineer' })
+
+      expect(res.status).toBe(422)
+    })
+  })
 })
