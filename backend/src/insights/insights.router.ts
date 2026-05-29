@@ -7,6 +7,7 @@ export const createInsightsRouter = (service: InsightsService): Router => {
   const controller = new InsightsController(service)
 
   router.get('/country/:country', controller.getCountryStats)
+  router.get('/job-title', controller.getJobTitleStats)
 
   return router
 }
