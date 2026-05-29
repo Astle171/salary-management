@@ -36,4 +36,14 @@ export class InsightsController {
       next(err)
     }
   }
+
+  getTopEarners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const limit = req.query.limit ? Number(req.query.limit) : 10
+      const earners = await this.service.getTopEarners(limit)
+      res.json(earners)
+    } catch (err) {
+      next(err)
+    }
+  }
 }

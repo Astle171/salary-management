@@ -8,6 +8,7 @@ export const createInsightsRouter = (service: InsightsService): Router => {
 
   router.get('/country/:country', controller.getCountryStats)
   router.get('/job-title', controller.getJobTitleStats)
+  router.get('/top-earners', controller.getTopEarners)
 
   return router
 }
