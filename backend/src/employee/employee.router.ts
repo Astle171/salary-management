@@ -7,6 +7,7 @@ export const createEmployeeRouter = (service: EmployeeService): Router => {
   const controller = new EmployeeController(service)
 
   router.get('/', controller.list)
+  router.post('/', controller.create)
 
   return router
 }

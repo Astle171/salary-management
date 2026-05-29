@@ -19,4 +19,13 @@ export class EmployeeController {
       next(err)
     }
   }
+
+  create = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+      const employee = await this.service.create(req.body)
+      res.status(201).json(employee)
+    } catch (err) {
+      next(err)
+    }
+  }
 }
