@@ -157,4 +157,24 @@ describe('Employee Routes', () => {
       expect(res.status).toBe(422)
     })
   })
+
+  describe('DELETE /api/employees/:id', () => {
+    it('should return 204 when employee is deleted', async () => {
+      const created = await repo.create({
+        full_name: 'Dan', job_title: 'Engineer', department: 'Engineering',
+        country: 'India', salary: 50000, currency: 'USD',
+        employment_type: 'full_time', hire_date: new Date(),
+      })
+
+      const res = await request(app).delete(`/api/employees/${created.id}`)
+
+      expect(res.status).toBe(204)
+    })
+
+    it('should return 404 when employee does not exist', async () => {
+      const res = await request(app).delete('/api/employees/bad-id')
+
+      expect(res.status).toBe(404)
+    })
+  })
 })
