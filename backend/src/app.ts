@@ -3,8 +3,10 @@ import cors from 'cors'
 import { EmployeeService } from './employee/employee.service'
 import { InsightsService } from './insights/insights.service'
 import { createEmployeeRouter } from './employee/employee.router'
+import { createInsightsRouter } from './insights/insights.router'
 import { errorHandlerMiddleware } from './shared/middleware/error-handler.middleware'
 import { InMemoryEmployeeRepository } from './employee/repository/in-memory-employee.repository'
+import { InMemoryInsightsRepository } from './insights/repository/in-memory-insights.repository'
 
 export interface AppDependencies {
   employeeService?: EmployeeService
@@ -26,6 +28,12 @@ export const createApp = (deps?: AppDependencies): Express => {
     new EmployeeService(new InMemoryEmployeeRepository())
 
   app.use('/api/employees', createEmployeeRouter(employeeService))
+
+  const insightsService =
+    deps?.insightsService ??
+    new InsightsService(new InMemoryInsightsRepository())
+
+  app.use('/api/insights', createInsightsRouter(insightsService))
 
   app.use(errorHandlerMiddleware)
 
