@@ -51,3 +51,21 @@ describe('EmployeeTable', () => {
     })
   })
 })
+
+describe('empty state', () => {
+  it('should show empty message when employees array is empty', () => {
+    render(<EmployeeTable employees={[]} />)
+
+    expect(screen.getByText(/no employees found/i)).toBeInTheDocument()
+  })
+})
+
+describe('loading state', () => {
+  it('should show skeleton rows when isLoading is true', () => {
+    render(<EmployeeTable employees={[]} isLoading />)
+
+    // Skeletons are shown, not the empty state
+    expect(screen.queryByText(/no employees found/i)).not.toBeInTheDocument()
+    expect(document.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0)
+  })
+})
