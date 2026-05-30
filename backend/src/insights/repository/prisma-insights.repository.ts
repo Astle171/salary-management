@@ -43,8 +43,10 @@ export class PrismaInsightsRepository implements IInsightsRepository {
     }
   }
 
-  async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
+  async getDepartmentDistribution(country?: string): Promise<DepartmentDistribution[]> {
+    const where = country ? { country } : {}
     const rows = await prisma.employee.groupBy({
+      where,
       by:      ['department'],
       _avg:    { salary: true },
       _count:  { id: true },
@@ -58,8 +60,10 @@ export class PrismaInsightsRepository implements IInsightsRepository {
     }))
   }
 
-  async getTopEarners(limit: number): Promise<TopEarner[]> {
+  async getTopEarners(limit: number, country?: string): Promise<TopEarner[]> {
+    const where = country ? { country } : {}
     const rows = await prisma.employee.findMany({
+      where,
       orderBy: { salary: 'desc' },
       take:    limit,
       select:  { id: true, full_name: true, job_title: true, country: true, salary: true },

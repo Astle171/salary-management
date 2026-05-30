@@ -15,9 +15,14 @@ export const insightsApi = {
   getJobTitleStats: (title: string, country: string): Promise<JobTitleStats> =>
     apiClient.get(`${BASE}/job-title?title=${encodeURIComponent(title)}&country=${encodeURIComponent(country)}`),
 
-  getTopEarners: (limit = 10): Promise<TopEarner[]> =>
-    apiClient.get(`${BASE}/top-earners?limit=${limit}`),
+  getTopEarners: (limit = 10, country?: string): Promise<TopEarner[]> => {
+    const params = new URLSearchParams({ limit: String(limit) })
+    if (country) params.append('country', country)
+    return apiClient.get(`${BASE}/top-earners?${params.toString()}`)
+  },
 
-  getDepartmentDistribution: (): Promise<DepartmentDistribution[]> =>
-    apiClient.get(`${BASE}/departments`),
+  getDepartmentDistribution: (country?: string): Promise<DepartmentDistribution[]> => {
+    const query = country ? `?country=${encodeURIComponent(country)}` : ''
+    return apiClient.get(`${BASE}/departments${query}`)
+  },
 }

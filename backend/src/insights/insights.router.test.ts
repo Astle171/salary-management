@@ -105,6 +105,23 @@ describe('Insights Routes', () => {
       expect(res.body[1].full_name).toBe('Medium')
     })
 
+    it('should filter top earners by country when specified', async () => {
+      insightsRepo.seedEmployees([
+        makeEmployee({ full_name: 'High USA', country: 'USA', salary: 150000 }),
+        makeEmployee({ full_name: 'High India', country: 'India', salary: 120000 }),
+        makeEmployee({ full_name: 'Low USA', country: 'USA', salary: 80000 }),
+      ])
+
+      const res = await request(app)
+        .get('/api/insights/top-earners')
+        .query({ limit: '5', country: 'USA' })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(2)
+      expect(res.body[0].full_name).toBe('High USA')
+      expect(res.body[1].full_name).toBe('Low USA')
+    })
+
     it('should default to top 10 when limit is not provided', async () => {
       insightsRepo.seedEmployees(
         Array.from({ length: 15 }, (_, i) =>
@@ -120,19 +137,40 @@ describe('Insights Routes', () => {
   })
 
   describe('GET /api/insights/departments', () => {
-  it('should return department distribution', async () => {
-    insightsRepo.seedEmployees([
-      makeEmployee({ department: 'Engineering', salary: 80000 }),
-      makeEmployee({ department: 'HR',          salary: 50000 }),
-    ])
+    it('should return department distribution', async () => {
+      insightsRepo.seedEmployees([
+        makeEmployee({ department: 'Engineering', salary: 80000 }),
+        makeEmployee({ department: 'HR',          salary: 50000 }),
+      ])
 
-    const res = await request(app).get('/api/insights/departments')
+      const res = await request(app).get('/api/insights/departments')
 
-    expect(res.status).toBe(200)
-    expect(res.body).toHaveLength(2)
-    expect(res.body[0]).toHaveProperty('department')
-    expect(res.body[0]).toHaveProperty('avg_salary')
-    expect(res.body[0]).toHaveProperty('employee_count')
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(2)
+      expect(res.body[0]).toHaveProperty('department')
+      expect(res.body[0]).toHaveProperty('avg_salary')
+      expect(res.body[0]).toHaveProperty('employee_count')
+    })
+
+    it('should filter department distribution by country when specified', async () => {
+      insightsRepo.seedEmployees([
+        makeEmployee({ department: 'Engineering', country: 'USA', salary: 100000 }),
+        makeEmployee({ department: 'Engineering', country: 'India', salary: 50000 }),
+        makeEmployee({ department: 'HR',          country: 'USA', salary: 60000 }),
+      ])
+
+      const res = await request(app)
+        .get('/api/insights/departments')
+        .query({ country: 'USA' })
+
+      expect(res.status).toBe(200)
+      expect(res.body).toHaveLength(2)
+      const eng = res.body.find((d: any) => d.department === 'Engineering')
+      const hr = res.body.find((d: any) => d.department === 'HR')
+      expect(eng.avg_salary).toBe(100000)
+      expect(eng.employee_count).toBe(1)
+      expect(hr.avg_salary).toBe(60000)
+      expect(hr.employee_count).toBe(1)
+    })
   })
-})
 })

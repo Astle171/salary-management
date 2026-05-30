@@ -11,16 +11,16 @@ export function useCountryStats(country: string) {
   })
 }
 
-export function useDepartmentDistribution() {
+export function useDepartmentDistribution(country?: string) {
   return useQuery({
-    queryKey: queryKeys.insights.departments(),
-    queryFn:  insightsApi.getDepartmentDistribution,
+    queryKey: queryKeys.insights.departments(country),
+    queryFn:  () => insightsApi.getDepartmentDistribution(country),
   })
 }
 
-export function useTopEarners(limit = 10) {
+export function useTopEarners(limit = 10, country?: string) {
   return useQuery({
-    queryKey: queryKeys.insights.topEarners(limit),
-    queryFn:  () => insightsApi.getTopEarners(limit),
+    queryKey: queryKeys.insights.topEarners(limit, country),
+    queryFn:  () => insightsApi.getTopEarners(limit, country),
   })
 }

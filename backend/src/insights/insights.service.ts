@@ -20,12 +20,12 @@ export class InsightsService {
     return this.repo.getJobTitleStats(jobTitle, country)
   }
 
-  async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
-    return this.repo.getDepartmentDistribution()
+  async getDepartmentDistribution(country?: string): Promise<DepartmentDistribution[]> {
+    return this.repo.getDepartmentDistribution(country)
   }
 
-  async getTopEarners(limit: number): Promise<TopEarner[]> {
-    return this.repo.getTopEarners(limit)
+  async getTopEarners(limit: number, country?: string): Promise<TopEarner[]> {
+    return this.repo.getTopEarners(limit, country)
   }
 }
 

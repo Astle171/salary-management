@@ -20,8 +20,8 @@ export function InsightsDashboard() {
   const [country, setCountry] = useState('')
 
   const { data: countryStats, isLoading: statsLoading } = useCountryStats(country)
-  const { data: departments  = [], isLoading: deptsLoading  } = useDepartmentDistribution()
-  const { data: topEarners   = [], isLoading: earnersLoading } = useTopEarners(TOP_N)
+  const { data: departments  = [], isLoading: deptsLoading  } = useDepartmentDistribution(country)
+  const { data: topEarners   = [], isLoading: earnersLoading } = useTopEarners(TOP_N, country)
 
   return (
     <div className="p-6 space-y-6 max-w-7xl mx-auto">

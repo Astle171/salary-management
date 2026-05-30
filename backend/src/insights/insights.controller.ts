@@ -40,7 +40,8 @@ export class InsightsController {
   getTopEarners = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const limit = req.query.limit ? Number(req.query.limit) : 10
-      const earners = await this.service.getTopEarners(limit)
+      const country = req.query.country as string | undefined
+      const earners = await this.service.getTopEarners(limit, country)
       res.json(earners)
     } catch (err) {
       next(err)
@@ -48,15 +49,16 @@ export class InsightsController {
   }
 
   getDepartmentDistribution = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction
-): Promise<void> => {
-  try {
-    const distribution = await this.service.getDepartmentDistribution()
-    res.json(distribution)
-  } catch (err) {
-    next(err)
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const country = req.query.country as string | undefined
+      const distribution = await this.service.getDepartmentDistribution(country)
+      res.json(distribution)
+    } catch (err) {
+      next(err)
+    }
   }
-}
 }

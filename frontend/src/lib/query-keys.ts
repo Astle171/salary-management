@@ -8,7 +8,7 @@ export const queryKeys = {
     country:   (country: string) => ['insights', 'country', country]  as const,
     jobTitle:  (title: string, country: string) =>
                  ['insights', 'job-title', title, country]             as const,
-    topEarners:(limit: number)   => ['insights', 'top-earners', limit] as const,
-    departments: ()                => ['insights', 'departments']              as const,
+    topEarners:(limit: number, country?: string)   => ['insights', 'top-earners', limit, country] as const,
+    departments: (country?: string)                => ['insights', 'departments', country]        as const,
   },
 }
