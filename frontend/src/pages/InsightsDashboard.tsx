@@ -27,11 +27,23 @@ export function InsightsDashboard() {
     <div className="p-6 space-y-6 max-w-7xl mx-auto">
 
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold">Salary Insights</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Organisation-wide salary analytics
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-semibold">Salary Insights</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            {country
+              ? `Showing data for ${country}`
+              : 'Select a country to see salary breakdowns'}
+          </p>
+        </div>
+        {country && (
+          <button
+            onClick={() => setCountry('')}
+            className="text-sm text-muted-foreground hover:text-foreground underline"
+          >
+            Clear filter
+          </button>
+        )}
       </div>
 
       {/* Country selector */}
