@@ -14,17 +14,15 @@ export const employeeFormSchema = z.object({
     .min(1, 'Country is required'),
 
   salary: z
-    .number({ invalid_type_error: 'Salary must be a number' })
+    .number({ message: 'Salary must be a number' })
     .positive('Salary must be a positive number'),
 
   department: z
     .string()
-    .optional()
-    .default('General'),
+    .optional(),
 
   employment_type: z
-    .enum(['full_time', 'part_time', 'contract'])
-    .default('full_time'),
+    .enum(['full_time', 'part_time', 'contract']),
 })
 
 export type EmployeeFormValues = z.infer<typeof employeeFormSchema>

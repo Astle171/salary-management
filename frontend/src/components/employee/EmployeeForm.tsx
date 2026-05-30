@@ -54,13 +54,17 @@ export function EmployeeForm({
   } = useForm<EmployeeFormValues>({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
-      full_name:       defaultValues?.full_name       ?? '',
-      job_title:       defaultValues?.job_title       ?? '',
-      country:         defaultValues?.country         ?? '',
-      salary:          defaultValues?.salary          ?? ('' as unknown as number),
-      department:      defaultValues?.department      ?? '',
-      employment_type: defaultValues?.employment_type ?? 'full_time',
-    },
+  full_name:       defaultValues?.full_name       ?? '',
+  job_title:       defaultValues?.job_title       ?? '',
+  country:         defaultValues?.country         ?? '',
+  salary:          typeof defaultValues?.salary === 'number'
+                     ? defaultValues.salary
+                     : undefined,
+  department:      defaultValues?.department      ?? '',
+  employment_type: (defaultValues?.employment_type as EmployeeFormValues['employment_type'])
+                     ?? 'full_time',
+},
+
   })
 
   return (
