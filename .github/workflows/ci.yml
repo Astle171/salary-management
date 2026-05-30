@@ -70,7 +70,7 @@ jobs:
       - name: Build check
         run: npm run build
         env:
-          VITE_API_URL: https://placeholder.railway.app
+          VITE_API_URL: https://salary-management-production-9819.up.railway.app
 
   all-green:
     name: All checks passed
