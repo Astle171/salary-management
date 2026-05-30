@@ -22,6 +22,7 @@ COPY --from=builder /app/dist        ./dist
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/prisma      ./prisma-src
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/data        ./data
 COPY start.sh ./
 RUN chmod +x start.sh
 
