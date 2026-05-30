@@ -23,7 +23,7 @@ const COLOURS = [
   '#10b981', '#f43f5e', '#8b5cf6',
 ]
 
-const formatTooltip = (value: number) => [formatSalary(value), 'Avg Salary']
+const formatTooltip = (value: any) => [formatSalary(Number(value)), 'Avg Salary']
 
 export function SalaryBarChart({ data, isLoading }: SalaryBarChartProps) {
   if (isLoading) {

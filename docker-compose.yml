@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: salary-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=file:./dev.db
+    volumes:
+      # Persist SQLite database across container restarts
+      - ./backend/prisma:/app/prisma
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        - VITE_API_URL=   # empty = uses nginx proxy to backend
+    container_name: salary-frontend
+    ports:
+      - "8082:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  prisma-data:

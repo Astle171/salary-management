@@ -3,22 +3,6 @@ import userEvent from '@testing-library/user-event'
 import { EmployeeForm } from './EmployeeForm'
 import type { Employee } from '@/types/employee.types'
 
-// Helper to fill all required fields except the one being tested
-const fillRequired = async (overrides: Record<string, string> = {}) => {
-  const fields: Record<string, string> = {
-    'Full name':  'Jane Doe',
-    'Job title':  'Engineer',
-    'Country':    'India',
-    'Salary':     '60000',
-    ...overrides,
-  }
-  for (const [label, value] of Object.entries(fields)) {
-    const input = screen.queryByLabelText(new RegExp(label, 'i'))
-    if (!input) continue
-    await userEvent.clear(input)
-    if (value) await userEvent.type(input, value)
-  }
-}
 
 describe('EmployeeForm', () => {
   describe('validation — required fields', () => {
