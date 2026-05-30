@@ -5,7 +5,7 @@ import { InsightsService } from './insights/insights.service'
 import { createEmployeeRouter } from './employee/employee.router'
 import { createInsightsRouter } from './insights/insights.router'
 import { errorHandlerMiddleware } from './shared/middleware/error-handler.middleware'
-import { InMemoryEmployeeRepository } from './employee/repository/in-memory-employee.repository'
+import { PrismaEmployeeRepository } from './employee/repository/prisma-employee.repository'
 import { InMemoryInsightsRepository } from './insights/repository/in-memory-insights.repository'
 
 export interface AppDependencies {
@@ -25,7 +25,7 @@ export const createApp = (deps?: AppDependencies): Express => {
 
   const employeeService =
     deps?.employeeService ??
-    new EmployeeService(new InMemoryEmployeeRepository())
+    new EmployeeService(new PrismaEmployeeRepository())
 
   app.use('/api/employees', createEmployeeRouter(employeeService))
 
