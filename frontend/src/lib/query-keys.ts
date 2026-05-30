@@ -9,5 +9,6 @@ export const queryKeys = {
     jobTitle:  (title: string, country: string) =>
                  ['insights', 'job-title', title, country]             as const,
     topEarners:(limit: number)   => ['insights', 'top-earners', limit] as const,
+    departments: ()                => ['insights', 'departments']              as const,
   },
 }

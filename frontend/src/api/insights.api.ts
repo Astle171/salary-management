@@ -2,6 +2,7 @@ import { apiClient } from './client'
 import type {
   CountryStats,
   JobTitleStats,
+  DepartmentDistribution,
   TopEarner,
 } from '@/types/insights.types'
 
@@ -16,4 +17,7 @@ export const insightsApi = {
 
   getTopEarners: (limit = 10): Promise<TopEarner[]> =>
     apiClient.get(`${BASE}/top-earners?limit=${limit}`),
+
+  getDepartmentDistribution: (): Promise<DepartmentDistribution[]> =>
+    apiClient.get(`${BASE}/departments`),
 }
