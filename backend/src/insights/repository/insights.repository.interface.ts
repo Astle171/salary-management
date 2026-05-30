@@ -10,6 +10,6 @@ import {
 export interface IInsightsRepository {
   getCountryStats(country: string): Promise<CountryStats | null>
   getJobTitleStats(jobTitle: string, country: string): Promise<JobTitleStats | null>
-  getDepartmentDistribution(): Promise<DepartmentDistribution[]>
-  getTopEarners(limit: number): Promise<TopEarner[]>
+  getDepartmentDistribution(country?: string): Promise<DepartmentDistribution[]>
+  getTopEarners(limit: number, country?: string): Promise<TopEarner[]>
 }

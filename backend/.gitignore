@@ -8,3 +8,7 @@ node_modules
 *.db-journal
 *.db-wal
 *.db-shm
+dev.db
+dev.db-journal
+test.db
+test.db-journal

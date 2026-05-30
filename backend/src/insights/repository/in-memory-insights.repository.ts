@@ -45,10 +45,14 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     }
   }
 
-  async getDepartmentDistribution(): Promise<DepartmentDistribution[]> {
+  async getDepartmentDistribution(country?: string): Promise<DepartmentDistribution[]> {
     const groups = new Map<string, number[]>()
 
-    for (const e of this.employees) {
+    const filtered = country
+      ? this.employees.filter(e => e.country === country)
+      : this.employees
+
+    for (const e of filtered) {
       const salaries = groups.get(e.department) ?? []
       salaries.push(e.salary)
       groups.set(e.department, salaries)
@@ -61,8 +65,12 @@ export class InMemoryInsightsRepository implements IInsightsRepository {
     }))
   }
 
-  async getTopEarners(limit: number): Promise<TopEarner[]> {
-    return [...this.employees]
+  async getTopEarners(limit: number, country?: string): Promise<TopEarner[]> {
+    const filtered = country
+      ? this.employees.filter(e => e.country === country)
+      : this.employees
+
+    return [...filtered]
       .sort((a, b) => b.salary - a.salary)
       .slice(0, limit)
       .map(e => ({

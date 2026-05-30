@@ -6,7 +6,7 @@ import { createEmployeeRouter } from './employee/employee.router'
 import { createInsightsRouter } from './insights/insights.router'
 import { errorHandlerMiddleware } from './shared/middleware/error-handler.middleware'
 import { PrismaEmployeeRepository } from './employee/repository/prisma-employee.repository'
-import { InMemoryInsightsRepository } from './insights/repository/in-memory-insights.repository'
+import { PrismaInsightsRepository } from './insights/repository/prisma-insights.repository'
 
 export interface AppDependencies {
   employeeService?: EmployeeService
@@ -16,24 +16,39 @@ export interface AppDependencies {
 export const createApp = (deps?: AppDependencies): Express => {
   const app = express()
 
-  app.use(cors())
+  // Allow Vercel frontend + local dev
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:8082',
+    process.env.FRONTEND_URL,           // set on Railway to your Vercel URL
+  ].filter(Boolean) as string[]
+
+  app.use(cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (curl, Postman, server-to-server)
+      if (!origin) return callback(null, true)
+      if (allowedOrigins.includes(origin)) return callback(null, true)
+      callback(new Error(`CORS: origin ${origin} not allowed`))
+    },
+    credentials: true,
+  }))
+
   app.use(express.json())
 
   app.get('/health', (_req, res) => {
-    res.json({ status: 'ok' })
+    res.json({ status: 'ok', env: process.env.NODE_ENV })
   })
 
   const employeeService =
     deps?.employeeService ??
     new EmployeeService(new PrismaEmployeeRepository())
 
-  app.use('/api/employees', createEmployeeRouter(employeeService))
-
   const insightsService =
     deps?.insightsService ??
-    new InsightsService(new InMemoryInsightsRepository())
+    new InsightsService(new PrismaInsightsRepository())
 
-  app.use('/api/insights', createInsightsRouter(insightsService))
+  app.use('/api/employees', createEmployeeRouter(employeeService))
+  app.use('/api/insights',  createInsightsRouter(insightsService))
 
   app.use(errorHandlerMiddleware)
 
