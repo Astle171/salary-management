@@ -80,3 +80,98 @@ Employee
 | L — Liskov | InMemoryRepo and PrismaRepo are interchangeable |
 | I — Interface Segregation | IEmployeeRepository and IInsightsRepository are separate |
 | D — Dependency Inversion | Service depends on interface, not Prisma directly |
+
+
+Key design decisions:
+- **Dependency Inversion**: Service depends on `IEmployeeRepository`, never Prisma
+- **InMemory repositories** in all tests — zero DB calls in unit/integration tests
+- **Test DB isolation**: Jest uses `test.db`, dev uses `dev.db` (never overlap)
+
+---
+
+## Local setup
+
+### Option A — One command with Docker
+
+```bash
+git clone https://github.com/your/salary-management
+cd salary-management
+docker compose up --build
+
+# Backend:  http://localhost:3000
+# Frontend: http://localhost:8080
+```
+
+### Option B — Manual
+
+**Backend**
+```bash
+cd backend
+npm install
+cp .env.example .env          # set DATABASE_URL
+npx prisma migrate dev
+npm run seed                  # seeds 10,000 employees
+npm run dev                   # http://localhost:3000
+```
+
+**Frontend**
+```bash
+cd frontend
+npm install
+npm run dev                   # http://localhost:5173
+```
+
+---
+
+## Running tests
+
+```bash
+# Backend (Jest + Supertest — uses isolated test.db)
+cd backend && npm test
+
+# Frontend (Vitest + React Testing Library)
+cd frontend && npm test
+
+# Coverage
+cd backend && npm run test:coverage
+```
+
+---
+
+## Features
+
+### Employee management
+- Paginated list with search (by name) and filter (by country)
+- Add / Edit / Delete via modal form with Zod validation
+- 10,000 employees seeded via performant batched insert (500/batch)
+
+### Salary insights
+- Min / max / avg salary per country
+- Avg salary by job title + country
+- Department salary distribution (bar chart)
+- Top 10 earners across the organisation
+
+---
+
+## Project structure
+salary-management/
+├── backend/
+│   ├── src/
+│   │   ├── employee/        CRUD — validator, service, repository, controller
+│   │   ├── insights/        Analytics — service, repository, controller
+│   │   └── shared/          Error types, helpers, middleware
+│   ├── prisma/              Schema + migrations
+│   └── data/                first_names.txt, last_names.txt
+├── frontend/
+│   └── src/
+│       ├── components/      EmployeeTable, Pagination, SearchBar,
+│       │                    EmployeeForm, StatCard, SalaryBarChart
+│       ├── hooks/           useEmployees, useInsights
+│       └── pages/           EmployeeListPage, InsightsDashboard
+└── docs/                    Architecture, AI prompts, trade-offs
+
+---
+
+## Commit history
+
+Commits follow a strict **TDD cycle**:
