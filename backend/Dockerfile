@@ -19,10 +19,12 @@ ENV NODE_ENV=production
 
 COPY --from=builder /app/dist        ./dist
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma      ./prisma
+COPY --from=builder /app/prisma      ./prisma-src
 COPY --from=builder /app/package.json ./package.json
+COPY start.sh ./
+RUN chmod +x start.sh
 
 EXPOSE 3000
 
-# Run migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+# Run entrypoint script
+CMD ["./start.sh"]
