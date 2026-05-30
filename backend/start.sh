@@ -21,7 +21,7 @@ npx prisma migrate deploy
 
 # Run seed script (idempotent - safe to run on startup)
 echo "Running database seed script..."
-npm run seed
+node dist/seed/seed.js
 
 # Start the server
 exec node dist/server.js
