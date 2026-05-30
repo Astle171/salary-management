@@ -118,4 +118,21 @@ describe('Insights Routes', () => {
       expect(res.body).toHaveLength(10)
     })
   })
+
+  describe('GET /api/insights/departments', () => {
+  it('should return department distribution', async () => {
+    insightsRepo.seedEmployees([
+      makeEmployee({ department: 'Engineering', salary: 80000 }),
+      makeEmployee({ department: 'HR',          salary: 50000 }),
+    ])
+
+    const res = await request(app).get('/api/insights/departments')
+
+    expect(res.status).toBe(200)
+    expect(res.body).toHaveLength(2)
+    expect(res.body[0]).toHaveProperty('department')
+    expect(res.body[0]).toHaveProperty('avg_salary')
+    expect(res.body[0]).toHaveProperty('employee_count')
+  })
+})
 })

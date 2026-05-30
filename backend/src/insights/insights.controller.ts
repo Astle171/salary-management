@@ -46,4 +46,17 @@ export class InsightsController {
       next(err)
     }
   }
+
+  getDepartmentDistribution = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  try {
+    const distribution = await this.service.getDepartmentDistribution()
+    res.json(distribution)
+  } catch (err) {
+    next(err)
+  }
+}
 }
