@@ -178,7 +178,7 @@ model Employee {
 
 ### Base URL
 - Development: `http://localhost:3000`
-- Production:  `https://your-app.up.railway.app`
+- Production:  `https://salary-management-production-9819.up.railway.app/`
 
 ### Employee Endpoints
 
