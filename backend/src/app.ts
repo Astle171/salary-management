@@ -2,15 +2,19 @@ import express, { Express } from 'express'
 import cors from 'cors'
 import { EmployeeService } from './employee/employee.service'
 import { InsightsService } from './insights/insights.service'
+import { SalaryHistoryService } from './salary-history/salary-history.service'
 import { createEmployeeRouter } from './employee/employee.router'
 import { createInsightsRouter } from './insights/insights.router'
+import { createSalaryHistoryRouter } from './salary-history/salary-history.router'
 import { errorHandlerMiddleware } from './shared/middleware/error-handler.middleware'
 import { PrismaEmployeeRepository } from './employee/repository/prisma-employee.repository'
 import { PrismaInsightsRepository } from './insights/repository/prisma-insights.repository'
+import { PrismaSalaryHistoryRepository } from './salary-history/repository/prisma-salary-history.repository'
 
 export interface AppDependencies {
   employeeService?: EmployeeService
   insightsService?: InsightsService
+  salaryHistoryService?: SalaryHistoryService
 }
 
 export const createApp = (deps?: AppDependencies): Express => {
@@ -52,7 +56,12 @@ export const createApp = (deps?: AppDependencies): Express => {
     deps?.insightsService ??
     new InsightsService(new PrismaInsightsRepository())
 
+  const salaryHistoryService =
+    deps?.salaryHistoryService ??
+    new SalaryHistoryService(new PrismaSalaryHistoryRepository())
+
   app.use('/api/employees', createEmployeeRouter(employeeService))
+  app.use('/api/employees', createSalaryHistoryRouter(salaryHistoryService))
   app.use('/api/insights',  createInsightsRouter(insightsService))
 
   app.use(errorHandlerMiddleware)
