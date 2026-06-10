@@ -104,6 +104,32 @@ curl "https://<your-url>/api/employees/<id>/salary?date=2026-06-10"
 
 Migration is applied automatically on Railway startup via `npx prisma migrate deploy` in `start.sh`. No manual steps needed.
 
-## Known limitation
+## Backfilling existing employees
 
-Employees that existed before this feature was deployed have no salary history records — querying them returns 404. A backfill script is needed to seed historical records for pre-existing employees.
+Employees that existed before this feature was deployed have no salary history records — querying them returns 404. Run the backfill script once after deployment to seed a historical record for every existing employee.
+
+The script is **idempotent** — it only targets employees with no salary history and is safe to run multiple times.
+
+### Run locally
+
+```bash
+cd backend
+npm run backfill:salary-history
+```
+
+### Run on Railway (one-off)
+
+Railway runs the production Docker image which has no `ts-node` — use the compiled output:
+
+```bash
+railway run npm run backfill:salary-history:prod
+```
+
+> This requires the app to have been built and deployed first (`dist/seed/backfill-salary-history.js` must exist).
+
+### What it does
+
+- Finds all employees with no `SalaryHistory` records
+- Creates one snapshot per employee using their current `salary`, `currency`, and `hire_date` as `effective_date`
+- Processes in batches of 500 to handle large datasets efficiently
+- Logs progress and skips automatically if all employees are already backfilled
