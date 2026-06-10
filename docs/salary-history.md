@@ -65,37 +65,37 @@ src/shared/
 
 ```bash
 # Missing date → 422
-curl "https://<your-url>/api/employees/<id>/salary"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary"
 
 # Invalid date → 422
-curl "https://<your-url>/api/employees/<id>/salary?date=not-a-date"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary?date=not-a-date"
 
 # No salary record before given date → 404
-curl "https://<your-url>/api/employees/<id>/salary?date=1990-01-01"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary?date=1990-01-01"
 ```
 
 ### Happy path
 
 ```bash
 # 1. Create employee — salary snapshot recorded automatically
-curl -X POST https://<your-url>/api/employees \
+curl -X POST https://salary-management-production-9819.up.railway.app/api/employees \
   -H "Content-Type: application/json" \
   -d '{"full_name":"Alice","job_title":"Engineer","country":"India","salary":80000}'
 # note the id from the response
 
 # 2. Query salary today → 80000
-curl "https://<your-url>/api/employees/<id>/salary?date=2026-06-10"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary?date=2026-06-10"
 
 # 3. Give Alice a raise
-curl -X PUT https://<your-url>/api/employees/<id> \
+curl -X PUT https://salary-management-production-9819.up.railway.app/api/employees/<id> \
   -H "Content-Type: application/json" \
   -d '{"salary":95000}'
 
 # 4. Query before the raise → still 80000
-curl "https://<your-url>/api/employees/<id>/salary?date=2026-06-09"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary?date=2026-06-09"
 
 # 5. Query today → 95000
-curl "https://<your-url>/api/employees/<id>/salary?date=2026-06-10"
+curl "https://salary-management-production-9819.up.railway.app/api/employees/<id>/salary?date=2026-06-10"
 ```
 
 ---
