@@ -7,18 +7,21 @@ import {
   FindResult,
   UpdateEmployeeInput,
 } from '../shared/types/employee.types'
+import { SalaryHistoryService } from '../salary-history/salary-history.service'
 
 export class EmployeeService {
-  constructor(private readonly repo: IEmployeeRepository) {}
+  constructor(
+    private readonly repo: IEmployeeRepository,
+    private readonly salaryHistoryService: SalaryHistoryService,
+  ) {}
 
   async create(data: unknown): Promise<Employee> {
     // Validation is fully delegated to EmployeeValidator (Single Responsibility).
     // ValidationError propagates to the caller unchanged.
     const validated = EmployeeValidator.validate(data as Record<string, unknown>)
-    return this.repo.create({
-      ...validated,
-      currency: 'USD',
-    })
+    const employee = await this.repo.create({ ...validated, currency: 'USD' })
+    await this.salaryHistoryService.recordSnapshot(employee.id, employee.salary, employee.currency, employee.hire_date)
+    return employee
   }
 
   async update(id: string, data: unknown): Promise<Employee> {
@@ -61,7 +64,11 @@ export class EmployeeService {
       sanitized.department = String(input.department).trim() || 'General'
     }
 
-    return this.repo.update(id, sanitized)
+    const updated = await this.repo.update(id, sanitized)
+    if (sanitized.salary !== undefined) {
+      await this.salaryHistoryService.recordSnapshot(updated.id, updated.salary, updated.currency, new Date())
+    }
+    return updated
   }
 
   async list(options: FindOptions): Promise<FindResult> {
