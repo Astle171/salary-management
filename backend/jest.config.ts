@@ -15,6 +15,9 @@ const config: Config = {
   // Runs once — deletes test.db
   globalTeardown: '<rootDir>/../jest.global-teardown.ts',
 
+  // SQLite shared test DB — run suites sequentially to prevent cross-suite data races
+  maxWorkers: 1,
+
   collectCoverageFrom: [
     '**/*.ts',
     '!**/node_modules/**',
