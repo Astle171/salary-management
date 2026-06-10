@@ -49,3 +49,30 @@ that render data-testid attributes. Tests verify data flow, not SVG output.
 - Occasionally wrote too much code at once (violating TDD law 1)
 - Sometimes suggested global state patterns that conflicted with DI design
 - Required manual review of every generated file before committing
+
+## New Feature prompt
+
+I'm working on a feature in this project — an employee salary management system for HR built with:
+
+Express + TypeScript backend
+Repository pattern: IXxxRepository interface → InMemoryXxxRepository (tests) + PrismaXxxRepository (production)
+Dependency injection via constructors
+Composition root in src/app.ts — only place real implementations are wired
+Tests never hit the real DB — always use in-memory repos seeded in beforeEach
+We are pair programming using strict TDD (Red → Green → Refactor).
+
+My role: I write tests first, attempt the implementation, ask you to check my work or explain things I don't understand.
+
+Your role: Check if my code is correct and explain what's wrong if not. Don't write the full solution immediately — guide me step by step. When I ask "what next", give me the next single step only. Explain the WHY behind every decision. When something needs documenting, add it to docs/<feature-name>.md.
+
+TDD flow: agree on what to build → I write the test (Red) → you check it → I write implementation (Green) → you check it → run npm test → next step.
+
+Relevant files to read first:
+
+src/app.ts
+src/employee/employee.service.ts
+src/employee/employee.router.ts
+src/employee/employee.controller.ts
+src/shared/types/employee.types.ts
+src/employee/repository/employee.repository.interface.ts
+prisma/schema.prisma
