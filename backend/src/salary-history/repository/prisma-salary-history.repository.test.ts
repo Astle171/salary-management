@@ -7,9 +7,9 @@ describe('PrismaSalaryHistoryRepository', () => {
 
   beforeAll(async () => {
     repo = new PrismaSalaryHistoryRepository()
-    await prisma.salaryHistory.deleteMany()
-    await prisma.employee.deleteMany()
+  })
 
+  beforeEach(async () => {
     const employee = await prisma.employee.create({
       data: {
         full_name: 'Test Employee',
@@ -23,11 +23,11 @@ describe('PrismaSalaryHistoryRepository', () => {
   })
 
   afterEach(async () => {
-    await prisma.salaryHistory.deleteMany()
+    // cascade deletes salary history records for this employee
+    await prisma.employee.delete({ where: { id: employeeId } })
   })
 
   afterAll(async () => {
-    await prisma.employee.deleteMany()
     await prisma.$disconnect()
   })
 

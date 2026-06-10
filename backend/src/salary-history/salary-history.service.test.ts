@@ -10,6 +10,17 @@ describe('SalaryHistoryService', () => {
     service = new SalaryHistoryService(repo)
   })
 
+  describe('recordSnapshot', () => {
+    it('creates a salary history record for the given employee', async () => {
+      await service.recordSnapshot('emp-1', 80000, 'USD', new Date('2024-01-01'))
+
+      const snapshot = await service.getSalaryAtDate('emp-1', new Date('2024-06-01'))
+
+      expect(snapshot.salary).toBe(80000)
+      expect(snapshot.employee_id).toBe('emp-1')
+    })
+  })
+
   describe('getSalaryAtDate', () => {
     it('returns the salary active on the given date', async () => {
       await repo.create({ employee_id: 'emp-1', salary: 80000, currency: 'USD', effective_date: new Date('2024-01-01') })

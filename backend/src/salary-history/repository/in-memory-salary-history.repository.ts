@@ -13,8 +13,13 @@ export class InMemorySalaryHistoryRepository implements ISalaryHistoryRepository
 
   async findAtDate(employeeId: string, date: Date): Promise<SalaryHistory | null> {
     const matches = this.records
-      .filter(r => r.employee_id === employeeId && r.effective_date <= date)
-      .sort((a, b) => b.effective_date.getTime() - a.effective_date.getTime())
+      .map((r, index) => ({ r, index }))
+      .filter(({ r }) => r.employee_id === employeeId && r.effective_date <= date)
+      .sort((a, b) => {
+        const dateDiff = b.r.effective_date.getTime() - a.r.effective_date.getTime()
+        return dateDiff !== 0 ? dateDiff : b.index - a.index
+      })
+      .map(({ r }) => r)
 
     return matches[0] ?? null
   }

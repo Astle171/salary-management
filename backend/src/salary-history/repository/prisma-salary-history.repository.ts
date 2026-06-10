@@ -13,7 +13,7 @@ export class PrismaSalaryHistoryRepository implements ISalaryHistoryRepository {
         employee_id: employeeId,
         effective_date: { lte: date },
       },
-      orderBy: { effective_date: 'desc' },
+      orderBy: [{ effective_date: 'desc' }, { created_at: 'desc' }],
     }) as Promise<SalaryHistory | null>
   }
 }

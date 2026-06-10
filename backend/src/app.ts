@@ -48,17 +48,17 @@ export const createApp = (deps?: AppDependencies): Express => {
     res.json({ status: 'ok', env: process.env.NODE_ENV })
   })
 
+  const salaryHistoryService =
+    deps?.salaryHistoryService ??
+    new SalaryHistoryService(new PrismaSalaryHistoryRepository())
+
   const employeeService =
     deps?.employeeService ??
-    new EmployeeService(new PrismaEmployeeRepository())
+    new EmployeeService(new PrismaEmployeeRepository(), salaryHistoryService)
 
   const insightsService =
     deps?.insightsService ??
     new InsightsService(new PrismaInsightsRepository())
-
-  const salaryHistoryService =
-    deps?.salaryHistoryService ??
-    new SalaryHistoryService(new PrismaSalaryHistoryRepository())
 
   app.use('/api/employees', createEmployeeRouter(employeeService))
   app.use('/api/employees', createSalaryHistoryRouter(salaryHistoryService))
