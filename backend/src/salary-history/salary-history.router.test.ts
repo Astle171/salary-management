@@ -3,6 +3,7 @@ import express from 'express'
 import { createSalaryHistoryRouter } from './salary-history.router'
 import { SalaryHistoryService } from './salary-history.service'
 import { InMemorySalaryHistoryRepository } from './repository/in-memory-salary-history.repository'
+import { errorHandlerMiddleware } from '../shared/middleware/error-handler.middleware'
 
 const buildApp = () => {
   const repo = new InMemorySalaryHistoryRepository()
@@ -10,6 +11,7 @@ const buildApp = () => {
   const app = express()
   app.use(express.json())
   app.use('/api/employees', createSalaryHistoryRouter(service))
+  app.use(errorHandlerMiddleware)
   return { app, repo }
 }
 
@@ -33,19 +35,19 @@ describe('GET /api/employees/:id/salary', () => {
     expect(res.status).toBe(404)
   })
 
-  it('returns 400 when date query param is missing', async () => {
+  it('returns 422 when date query param is missing', async () => {
     const { app } = buildApp()
 
     const res = await request(app).get('/api/employees/emp-1/salary')
 
-    expect(res.status).toBe(400)
+    expect(res.status).toBe(422)
   })
 
-  it('returns 400 when date is not a valid date string', async () => {
+  it('returns 422 when date is not a valid date string', async () => {
     const { app } = buildApp()
 
     const res = await request(app).get('/api/employees/emp-1/salary?date=not-a-date')
 
-    expect(res.status).toBe(400)
+    expect(res.status).toBe(422)
   })
 })
