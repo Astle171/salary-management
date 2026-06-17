@@ -25,3 +25,13 @@ Built following **TDD**, **SOLID principles**, and clean layered architecture.
 
 See [`docs/architecture.md`](docs/architecture.md) for the full SOLID layer map,
 DB schema, and API contract.
+
+---
+
+## Submission docs
+
+| Document | Purpose |
+|---|---|
+| [`SUBMISSION.md`](SUBMISSION.md) | What was built, AI tools used, key decisions, honest gaps |
+| [`docs/tradeoffs.md`](docs/tradeoffs.md) | 20 explicit engineering decisions with reasoning |
+| [`docs/ai-prompts.md`](docs/ai-prompts.md) | Log of meaningful AI prompts and what each one changed |
