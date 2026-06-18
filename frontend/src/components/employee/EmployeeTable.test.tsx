@@ -66,6 +66,6 @@ describe('loading state', () => {
 
     // Skeletons are shown, not the empty state
     expect(screen.queryByText(/no employees found/i)).not.toBeInTheDocument()
-    expect(document.querySelectorAll('.animate-pulse').length).toBeGreaterThan(0)
+    expect(document.querySelectorAll('.skeleton-shimmer').length).toBeGreaterThan(0)
   })
 })

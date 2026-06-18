@@ -68,7 +68,7 @@ describe('SalaryBarChart', () => {
     it('should show skeleton when isLoading is true', () => {
       render(<SalaryBarChart data={[]} isLoading />)
 
-      expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
+      expect(document.querySelector('.skeleton-shimmer')).toBeInTheDocument()
       expect(screen.queryByText(/no department data/i)).not.toBeInTheDocument()
     })
   })
