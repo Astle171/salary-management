@@ -3,6 +3,8 @@ import express from 'express'
 import { createApp } from '../app'
 import { EmployeeService } from './employee.service'
 import { InMemoryEmployeeRepository } from './repository/in-memory-employee.repository'
+import { SalaryHistoryService } from '../salary-history/salary-history.service'
+import { InMemorySalaryHistoryRepository } from '../salary-history/repository/in-memory-salary-history.repository'
 
 const makeValidInput = (overrides = {}) => ({
   full_name: 'Jane Doe',
@@ -18,7 +20,8 @@ describe('Employee Routes', () => {
 
   beforeEach(() => {
     repo = new InMemoryEmployeeRepository()
-    const employeeService = new EmployeeService(repo)
+    const salaryHistoryService = new SalaryHistoryService(new InMemorySalaryHistoryRepository())
+    const employeeService = new EmployeeService(repo, salaryHistoryService)
     app = createApp({ employeeService })
   })
 

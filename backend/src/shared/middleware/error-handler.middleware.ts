@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { ValidationError } from '../errors/validation.error'
+import { NotFoundError } from '../errors/not-found.error'
 
 export const errorHandlerMiddleware = (
   err: Error,
@@ -12,7 +13,7 @@ export const errorHandlerMiddleware = (
     return
   }
 
-  if (err.message === 'Employee not found') {
+  if (err instanceof NotFoundError || err.message === 'Employee not found') {
     res.status(404).json({ error: err.message })
     return
   }

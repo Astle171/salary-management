@@ -1,6 +1,8 @@
 import { EmployeeService } from './employee.service'
 import { InMemoryEmployeeRepository } from './repository/in-memory-employee.repository'
 import { ValidationError } from '../shared/errors/validation.error'
+import { SalaryHistoryService } from '../salary-history/salary-history.service'
+import { InMemorySalaryHistoryRepository } from '../salary-history/repository/in-memory-salary-history.repository'
 
 const makeValidInput = (overrides = {}) => ({
   full_name: 'Jane Doe',
@@ -13,10 +15,13 @@ const makeValidInput = (overrides = {}) => ({
 describe('EmployeeService', () => {
   let repo: InMemoryEmployeeRepository
   let service: EmployeeService
+  let salaryHistoryService: SalaryHistoryService
 
   beforeEach(() => {
     repo = new InMemoryEmployeeRepository()
-    service = new EmployeeService(repo)
+    const salaryHistoryRepo = new InMemorySalaryHistoryRepository()
+    salaryHistoryService = new SalaryHistoryService(salaryHistoryRepo)
+    service = new EmployeeService(repo, salaryHistoryService)
   })
 
   describe('create', () => {
@@ -149,6 +154,35 @@ describe('EmployeeService', () => {
       await expect(
         service.getById('non-existent-id')
       ).rejects.toThrow('Employee not found')
+    })
+  })
+
+  describe('salary history recording', () => {
+    it('records a snapshot on employee create', async () => {
+      const employee = await service.create(makeValidInput({ salary: 60000 }))
+
+      const snapshot = await salaryHistoryService.getSalaryAtDate(employee.id, new Date())
+
+      expect(snapshot.salary).toBe(60000)
+      expect(snapshot.employee_id).toBe(employee.id)
+    })
+
+    it('records a snapshot when salary is updated', async () => {
+      const employee = await service.create(makeValidInput({ salary: 60000 }))
+      await service.update(employee.id, { salary: 80000 })
+
+      const snapshot = await salaryHistoryService.getSalaryAtDate(employee.id, new Date())
+
+      expect(snapshot.salary).toBe(80000)
+    })
+
+    it('does not record a new snapshot when update has no salary change', async () => {
+      const employee = await service.create(makeValidInput({ salary: 60000 }))
+      await service.update(employee.id, { full_name: 'New Name' })
+
+      const snapshot = await salaryHistoryService.getSalaryAtDate(employee.id, new Date())
+
+      expect(snapshot.salary).toBe(60000)
     })
   })
 })

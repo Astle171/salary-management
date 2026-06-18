@@ -7,7 +7,7 @@ export class EmployeeQueryBuilder {
       ...(options.country && { country: options.country }),
       ...(options.job_title && { job_title: options.job_title }),
       ...(options.search && {
-        full_name: { contains: options.search, mode: 'insensitive' },
+        full_name: { contains: options.search },
       }),
     }
   }

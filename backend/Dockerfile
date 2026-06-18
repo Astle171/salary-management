@@ -16,13 +16,17 @@ FROM node:20-alpine AS runner
 WORKDIR /app
 RUN apk add --no-cache openssl
 ENV NODE_ENV=production
+ENV DATABASE_URL="file:/app/prisma/dev.db"
 
 COPY --from=builder /app/dist        ./dist
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/prisma      ./prisma
+COPY --from=builder /app/prisma      ./prisma-src
 COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/data        ./data
+COPY start.sh ./
+RUN chmod +x start.sh
 
 EXPOSE 3000
 
-# Run migrations then start the server
-CMD ["sh", "-c", "npx prisma migrate deploy && node dist/server.js"]
+# Run entrypoint script
+CMD ["./start.sh"]

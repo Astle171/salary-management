@@ -10,7 +10,9 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "seed": "ts-node src/seed/seed.ts"
+    "seed": "ts-node src/seed/seed.ts",
+    "backfill:salary-history": "ts-node src/seed/backfill-salary-history.ts",
+    "backfill:salary-history:prod": "node dist/seed/backfill-salary-history.js"
   },
   "keywords": [],
   "author": "",

@@ -8,15 +8,30 @@ datasource db {
 }
 
 model Employee {
-  id              String   @id @default(uuid())
+  id              String          @id @default(uuid())
   full_name       String
   job_title       String
   department      String
   country         String
   salary          Float
-  currency        String   @default("USD")
-  employment_type String   @default("full_time")
-  hire_date       DateTime @default(now())
-  created_at      DateTime @default(now())
-  updated_at      DateTime @updatedAt
+  currency        String          @default("USD")
+  employment_type String          @default("full_time")
+  hire_date       DateTime        @default(now())
+  created_at      DateTime        @default(now())
+  updated_at      DateTime        @updatedAt
+  salary_history  SalaryHistory[]
 }
+
+model SalaryHistory {
+  id             String   @id @default(uuid())
+  employee_id    String
+  salary         Float
+  currency       String   @default("USD")
+  effective_date DateTime
+  created_at     DateTime @default(now())
+
+  employee Employee @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+
+  @@index([employee_id, effective_date])
+}
+

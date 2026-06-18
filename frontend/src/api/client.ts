@@ -1,6 +1,8 @@
-// In dev: VITE_API_URL is undefined → uses Vite proxy → relative path ''
-// In prod: VITE_API_URL = 'https://your-app.railway.app'
-const BASE_URL = import.meta.env.VITE_API_URL ?? ''
+let rawBase = import.meta.env.VITE_API_URL ?? ''
+if (rawBase && !rawBase.startsWith('http://') && !rawBase.startsWith('https://')) {
+  rawBase = `https://${rawBase}`
+}
+const BASE_URL = rawBase.endsWith('/') ? rawBase.slice(0, -1) : rawBase
 
 export class ApiError extends Error {
   constructor(
